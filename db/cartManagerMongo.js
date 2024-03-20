@@ -8,7 +8,7 @@ class CartManager {
   async addCart() {
     try {
       const createdCart = await Cart.create({ products: [] });
-      console.log(createdCart);
+
       return createdCart._id;
     } catch (err) {
       console.error(err);

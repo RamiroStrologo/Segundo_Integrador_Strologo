@@ -20,11 +20,15 @@ route.get(
   }),
   (req, res) => {
     let token = tokenGenerator(req.user);
-    console.log(token);
     res.cookie("cookieToken", token, { httpOnly: true });
     res.redirect("/views/products");
   }
 );
+
+//PASAR LOS DATOS DEL JWT AL FRONT
+// route.get('/current', (req, res) => {
+//   res.json()
+//  });
 
 //CERRAR SESIÓN
 route.get("/logout", (req, res) => {
