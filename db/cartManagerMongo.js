@@ -57,10 +57,14 @@ class CartManager {
 
   async addProdToCart(cId, pId) {
     try {
-      this.cart = await Cart.findOne({ _id: cId });
-      this.cart.products.push({ product: pId });
-      await this.cart.save();
-      return true;
+      console.log(cId);
+      const cart = await Cart.findOne({ _id: cId });
+      console.log(cart);
+      if (cart) {
+        cart.products.push({ product: pId });
+        await cart.save();
+        return true;
+      } else return false;
     } catch (err) {
       console.error(err);
       return false;

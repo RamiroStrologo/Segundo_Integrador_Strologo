@@ -8,6 +8,7 @@ const viewRoutes = require("./routes/views.routes");
 const cartRoutes = require("./routes/cart.routes");
 const productsRoutes = require("./routes/products.routes");
 const authRoutes = require("./routes/auth.routes");
+const sessionRoutes = require("./routes/session.routes");
 const PORT = 8080;
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/views", viewRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/session", sessionRoutes);
 app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
 app.set("views", `${__dirname}/views`);

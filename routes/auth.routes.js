@@ -25,11 +25,6 @@ route.get(
   }
 );
 
-//PASAR LOS DATOS DEL JWT AL FRONT
-// route.get('/current', (req, res) => {
-//   res.json()
-//  });
-
 //CERRAR SESIÓN
 route.get("/logout", (req, res) => {
   res.clearCookie("cookieToken").redirect("/views/login");

@@ -1,30 +1,36 @@
 window.onload = LoadPageProducts();
 
-function LoadPageProducts() {
-  fetch("/api/products")
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.msg === "Productos obtenidos con exito") {
-        const products = data.data.docs;
-        const prodCont = document.getElementById("prod_container");
-        let id_cont = 0;
-        products.forEach((product) => {
-          const productEl = document.createElement("div");
-          productEl.innerHTML = `<span>Nombre: ${product.title}, Descripción: ${product.price}, Código: ${product.code}, Precio: ${product.price}, Estado: ${product.status}, Stock: ${product.stock}, Categoria: ${product.category}</span> <button class="btnAddToCart">ADD TO CART</button><span id="msg${id_cont}"></span>`;
-          prodCont.appendChild(productEl);
-          const btnAddToCart = productEl.querySelector(".btnAddToCart");
-          asignEventAddToCart(btnAddToCart, product._id, id_cont);
-          id_cont++;
-        });
-      } else {
-        const errorMessage = document.createElement("p");
-        errorMessage.textContent = data.msg;
-        document.body.appendChild(errorMessage);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+async function LoadPageProducts() {
+  let cartId;
+  let response;
+  let data;
+  try {
+    response = await fetch("/api/session/current");
+    data = await response.json();
+    cartId = data.cart;
+    response = await fetch("/api/products");
+    data = await response.json();
+    if (data.msg === "Productos obtenidos con exito") {
+      const products = data.data.docs;
+      const prodCont = document.getElementById("prod_container");
+      let id_cont = 0;
+      products.forEach((product) => {
+        const productEl = document.createElement("div");
+        productEl.innerHTML = `<span>Nombre: ${product.title}, Descripción: ${product.price}, Código: ${product.code}, Precio: ${product.price}, Estado: ${product.status}, Stock: ${product.stock}, Categoria: ${product.category}</span> <button class="btnAddToCart">ADD TO CART</button><span id="msg${id_cont}"></span>`;
+        prodCont.appendChild(productEl);
+        const btnAddToCart = productEl.querySelector(".btnAddToCart");
+        console.log(cartId);
+        asignEventAddToCart(btnAddToCart, product._id, id_cont, cartId);
+        id_cont++;
+      });
+    } else {
+      const errorMessage = document.createElement("p");
+      errorMessage.textContent = data.msg;
+      document.body.appendChild(errorMessage);
+    }
+  } catch (err) {
+    console.error(err);
+  }
 }
 const btnToCart = document.querySelector("#toCart");
 btnToCart.addEventListener("click", () => {
@@ -37,13 +43,13 @@ btnLogout.addEventListener("click", async () => {
   window.location.href = "/views/login";
   console.log("first");
 });
-function asignEventAddToCart(btnDivGame, data, id_cont) {
+function asignEventAddToCart(btnDivGame, data, id_cont, cartId) {
   btnDivGame.addEventListener("click", () => {
-    addToCart(data, id_cont);
+    addToCart(data, id_cont, cartId);
   });
 }
-function addToCart(data, id_cont) {
-  fetch(`/api/cart/addProdToCart/65db98aa1fe1ebdacd370877/${data}`, {
+function addToCart(data, id_cont, cartId) {
+  fetch(`/api/cart/addProdToCart/${cartId}/${data}`, {
     method: "PUT",
   })
     .then((response) => response.json())
